@@ -143,15 +143,22 @@ int main(int argc, char **argv)
 
     Mat3 test_identity;
     test_identity = mat3_create_identity();
-    Vec3 v3a = vec3_init(1.0f, 4.0f, 7.0f);
+    Vec3 v3a = vec3_init(1.0f, 1.0f, 7.0f);
     Vec3 v3b = vec3_init(2.0f, 5.0f, 8.0f);
-    Vec3 v3c = vec3_init(3.0f, 6.0f, 9.0f);
+    Vec3 v3c = vec3_init(3.0f, 3.0f, 9.0f);
     Mat3 test_matrix = mat3_init_vec3(v3a, v3b, v3c);
     printf("test matrix before multiplication\n");
     mat3_print_elements(test_matrix);
     printf("test matrix after multiplication\n");
     Mat3 test_result = mat3_mult(test_identity, test_matrix);
     mat3_print_elements(test_result);
+
+    Mat3 test_inv = mat3_inverse(test_matrix);
+    printf("test inverse:\n");
+    mat3_print_elements(test_inv);
+    test_identity = mat3_mult(test_matrix, test_inv);
+    printf("Now check that it's identity! \n");
+    mat3_print_elements(test_identity);
 
     while (running) {
 	SDL_Event event;

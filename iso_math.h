@@ -38,7 +38,11 @@ typedef struct {
 #define mat3(mat,a,b) mat.elements[b][a]
 
 
+typedef struct {
+    float elements[4][4];
+} Mat4;
 
+#define mat4(mat,a,b) mat.elements[b][a]
 
 
 Vec2 vec2_init(float x, float y);
@@ -68,6 +72,10 @@ Mat2 mat2_inverse(Mat2 a);
 Vec3 vec3_init(float x, float y, float z);
 
 
+Vec3 vec3_add(Vec3 a, Vec3 b);
+
+Vec3 vec3_sub(Vec3 a, Vec3 b);
+
 Vec3 vec3_scale(Vec3 a, float scalar);
 
 
@@ -78,6 +86,7 @@ Vec3 vec3_normalize(Vec3 a);
 
 Vec3 vec3_cross(Vec3 a, Vec3 b);
 
+float vec3_triple(Vec3 a, Vec3 b, Vec3 c);
 
 Mat3 mat3_create_zero(void);
 
@@ -99,5 +108,19 @@ Mat3 mat3_mult(Mat3 a, Mat3 b);
 Mat3 mat3_transpose(Mat3 a);
 
 float mat3_det(Mat3 a);
+
+
+
+
+Mat3 mat3_adjugate(Mat3 a);
+Mat3 mat3_scale(Mat3 a, float scalar);
+Mat3 mat3_inverse(Mat3 a);
+
+Vec3 vec3_from_mat3(Mat3 a, int col);
+Vec3 vec3_from_mat4(Mat4 a, int col);
+
+Mat4 mat4_create_zero(void);
+Mat4 mat4_create_identity(void);
+Mat4 mat4_mult(Mat4 a, Mat4 b);
 
 #endif
