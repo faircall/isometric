@@ -23,6 +23,8 @@
 
 //finish mat4 in the library
 
+//SOLVE PERSPECTIVE MATRIX ISSUE
+
 
 void load_text_file(char *file_name, char **buffer)
 {
@@ -143,46 +145,37 @@ int main(int argc, char **argv)
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    Mat3 test_identity;
-    test_identity = mat3_create_identity();
-    Vec3 v3a = vec3_init(1.0f, 1.0f, 7.0f);
-    Vec3 v3b = vec3_init(2.0f, 5.0f, 8.0f);
-    Vec3 v3c = vec3_init(3.0f, 3.0f, 9.0f);
-    Mat3 test_matrix = mat3_init_vec3(v3a, v3b, v3c);
-    printf("test matrix before multiplication\n");
-    mat3_print_elements(test_matrix);
-    printf("test matrix after multiplication\n");
-    Mat3 test_result = mat3_mult(test_identity, test_matrix);
-    mat3_print_elements(test_result);
 
-    Mat3 test_inv = mat3_inverse(test_matrix);
-    printf("test inverse:\n");
-    mat3_print_elements(test_inv);
-    test_identity = mat3_mult(test_matrix, test_inv);
-    printf("Now check that it's identity! \n");
-    mat3_print_elements(test_identity);
 
-    Mat4 test_mat4 = mat4_init(1, 2, 3, 4,
-		   1, 1, 4, 5,
-		   2, 3, 3, 2,
-		   5, 1, 2, 1);
 
-    printf("for test4\n");
-    mat4_print_elements(test_mat4);
+    float fov = 60.0f;
+    float near = 0.1f;
+    float far = 100.0f;
+    float aspect = 1280.0f/720.0f;
+
+    Mat4 perspective_matrix = mat4_create_perspective(fov, aspect, near, far);
+
+    //Mat4 perspective_matrix = mat4_create_identity();
+
+    GLint perspective_location = glGetUniformLocation(shader_program, "perspective");
+    GLint camera_location = glGetUniformLocation(shader_program, "camera");
+    glUseProgram(shader_program);
+    glUniformMatrix4fv(perspective_location, 1, GL_FALSE, perspective_matrix.elements);
+
+    mat4_print_elements(perspective_matrix);
+
+    Vec3 camera = vec3_init(0.0f, 0.0f, 0.0f);
+
+
+    float current_time, time_elapsed, last_time = 0.0f;
     
-    Mat4 test_mat4_inverse = mat4_inverse(test_mat4);
-    printf("for test4 inverse\n");
-    mat4_print_elements(test_mat4_inverse);
-    
-    Mat4 test_mat4_identity = mat4_mult(test_mat4, test_mat4_inverse);
-    printf("for test4 identity\n");
-    mat4_print_elements(test_mat4_identity);
-
-
-    float fov = 90.0f;
-    
-
     while (running) {
+	current_time = SDL_GetTicks();
+	float current_time_ms = current_time / 1000.0f;
+	time_elapsed = current_time - last_time;
+	last_time = current_time;
+	float dt = time_elapsed / 1000.0f;
+	
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 	    if (event.type == SDL_QUIT) {
@@ -191,10 +184,42 @@ int main(int argc, char **argv)
 	    }
 	}
 
+	const Uint8 *keys = SDL_GetKeyboardState(NULL);
+
+
+	if (keys[SDL_SCANCODE_UP]) {
+	    camera.y += dt;
+	}
+
+	if (keys[SDL_SCANCODE_DOWN]) {
+	    camera.y -= dt;
+	}
+
+	if (keys[SDL_SCANCODE_LEFT]) {
+	    camera.x -= dt;
+	}
+	if (keys[SDL_SCANCODE_RIGHT]) {
+	    camera.x += dt;
+	}
+
+	if (keys[SDL_SCANCODE_SPACE]) {
+	    camera.z += dt;
+	}
+
+	if (keys[SDL_SCANCODE_LCTRL]) {
+	    camera.z -= dt;
+	}
+
+	//is this invertible?
+	Mat4 camera_matrix = mat4_create_translation(camera);
+	
+	glViewport(0.0f, 0.0f, SCREENWIDTH, SCREENHEIGHT);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glUseProgram(shader_program);
+	glUniformMatrix4fv(camera_location, 1, GL_FALSE, camera_matrix.elements);
+	glUniformMatrix4fv(perspective_location, 1, GL_FALSE, perspective_matrix.elements);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	

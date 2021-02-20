@@ -439,10 +439,15 @@ Mat4 mat4_create_perspective(float fovy, float s, float n, float f)
     //f is far
     float g = 1.0f / tan_deg(fovy * 0.5f);
     float k = f / (f - n);
-    return mat4_init(g / s, 0.0f, 0.0f, 0.0f,
-		     0.0f, g, 0.0f, 0.0f,
-		     0.0f, 0.0f, k, -n * k,
-		     0.0f, 0.0f, 1.0f, 0.0f);
+    Mat4 result = mat4_create_identity();
+    mat4(result, 0, 0) = g/s;
+    mat4(result, 1, 1) = g;
+    mat4(result, 2, 2) = k;
+    mat4(result, 2, 3) = -n*k;
+    mat4(result, 3, 2) = 1.0f;
+    mat4(result, 3, 3) = 0.0f;
+
+    return result;
 }
 
 Mat4 mat4_mult(Mat4 a, Mat4 b)
