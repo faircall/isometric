@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#define MYPI 3.1415
+
 typedef struct {
     float x;
     float y;
@@ -13,6 +15,13 @@ typedef struct {
     float y;
     float z;
 } Vec3;
+
+typedef struct {
+    float x;
+    float y;
+    float z;
+    float w;
+} Vec4;
 
 //I'm unsure if this is actually
 //getting around the issue of a bunch of
@@ -122,5 +131,37 @@ Vec3 vec3_from_mat4(Mat4 a, int col);
 Mat4 mat4_create_zero(void);
 Mat4 mat4_create_identity(void);
 Mat4 mat4_mult(Mat4 a, Mat4 b);
+
+Vec4 vec4_init(float x, float y, float z, float w);
+Mat4 mat4_scale(Mat4 a, float scalar);
+
+
+
+Mat4 mat4_from_vec4_row(Vec4 r0, Vec4 r1, Vec4 r2, Vec4 r3);
+
+void mat4_print_elements(Mat4 m);
+
+Mat4 mat4_init(float a00, float a01, float a02, float a03,
+	       float a10, float a11, float a12, float a13,
+	       float a20, float a21, float a22, float a23,
+	       float a30, float a31, float a32, float a33);
+
+Mat4 mat4_from_vec4_col(Vec4 c0, Vec4 c1, Vec4 c2, Vec4 c3);
+
+Mat4 mat4_inverse(Mat4 a);
+
+Mat4 mat4_create_translation(Vec3 t);
+
+Mat4 mat4_create_translation_rotation(Mat3 rotation, Vec3 t);
+
+Mat4 mat4_create_perspective(float fovy, float s, float n, float f);
+
+float cos_deg(float angle);
+float sin_deg(float angle);
+float tan_deg(float angle);
+
+float deg_to_rad(float angle);
+
+
 
 #endif

@@ -21,6 +21,8 @@
 //Everything is a textured quad
 //
 
+//finish mat4 in the library
+
 
 void load_text_file(char *file_name, char **buffer)
 {
@@ -159,6 +161,26 @@ int main(int argc, char **argv)
     test_identity = mat3_mult(test_matrix, test_inv);
     printf("Now check that it's identity! \n");
     mat3_print_elements(test_identity);
+
+    Mat4 test_mat4 = mat4_init(1, 2, 3, 4,
+		   1, 1, 4, 5,
+		   2, 3, 3, 2,
+		   5, 1, 2, 1);
+
+    printf("for test4\n");
+    mat4_print_elements(test_mat4);
+    
+    Mat4 test_mat4_inverse = mat4_inverse(test_mat4);
+    printf("for test4 inverse\n");
+    mat4_print_elements(test_mat4_inverse);
+    
+    Mat4 test_mat4_identity = mat4_mult(test_mat4, test_mat4_inverse);
+    printf("for test4 identity\n");
+    mat4_print_elements(test_mat4_identity);
+
+
+    float fov = 90.0f;
+    
 
     while (running) {
 	SDL_Event event;
